@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+    <head>
+        <title>HTIL Cozmo GUI</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <!-- <link rel="stylesheet" href="styles/titatoggle-dist-min.css"> -->
+        <link rel="stylesheet" href="styles/main.css">
+    </head>
+
+    <body>
+
+        <header>
+            <h1>Human-Technology Interaction Laboratory Ad Hoc Cozmo GUI Interface</h1>
+        </header>
+        <div class="container white">
+            <h2>
+                <span>Vocalization Options</span>
+                <span class="float-right">
+                    <!-- <div class="checkbox-slider--a checkbox-slider-md">
+                        <label><input type="checkbox" data-on="High"><span></span></label>
+                    </div> -->
+                    <input id="tog" data-on="High" data-off="Low" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" type="checkbox">
+                </span>
+            </h2>
+            <div class="row">
+                <div class="col text-center"> <button  id="btn0" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">Greeting</button> </div>
+                <div class="col text-center"> <button  id="btn1" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">Battery low</button> </div>
+                <div class="w-100"></div>
+                <div class="col text-center"> <button  id="btn2" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">PH</button> </div>
+                <div class="col text-center"> <button  id="btn3" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">PH</button> </div>
+                <div class="w-100"></div>
+                <div class="col text-center"> <button  id="btn4" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">PH</button> </div>
+                <div class="col text-center"> <button  id="btn5" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">PH</button> </div>
+                <div class="w-100"></div>
+                <div class="col text-center"> <button  id="btn6" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">PH</button> </div>
+                <div class="col text-center"> <button  id="btn7" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">PH</button> </div>
+                <div class="w-100"></div>
+                <div class="col text-center"> <button  id="btn8" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">PH</button> </div>
+                <div class="col text-center"> <button  id="btn9" class="btn btn-primary btn-block" onclick="clickEvent(this.id)">PH</button> </div>
+            </div>
+        </div>
+    </body>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript">
+        var map = {
+            "btn0": ["Hello, my name is Cozmo", "What the fuck are you doing here?"],
+            "btn1": ["I'm feeling tired. They forgot to charge my battery today", "My battery is low"],
+            "btn2": ["placeholder", "holder of places"],
+            "btn3": ["placeholder", "holder of places"],
+            "btn4": ["placeholder", "holder of places"],
+            "btn5": ["placeholder", "holder of places"],
+            "btn6": ["placeholder", "holder of places"],
+            "btn7": ["placeholder", "holder of places"],
+            "btn8": ["placeholder", "holder of places"],
+            "btn9": ["placeholder", "holder of places"]
+        };
+        var isOp = false;
+        var isLow = false;
+
+        $(function() {
+            $('#tog').change(function() {
+                isLow = !$(this).prop('checked');
+            });
+        });
+
+        var sock = new WebSocket (
+            "ws://localhost:12345"
+        );
+        
+        sock.onopen = () => {
+            sock.send("Connection established");
+            isOp = true;
+        }
+
+        sock.onmessage = (event) => {
+            console.log("SOCK: ", event);
+            return false;
+        }
+
+        sock.onclose = () => {
+            console.log("Connection closed");
+        }
+
+        sock.onerror = (err) => {
+            console.error(err);
+        }
+
+        function clickEvent(id) {
+            if (isOp) {
+                sock.send(map[id][(isLow ? 1 : 0)]); //ternary if statement neatoo (condition ? ifTrue : ifFalse)
+            } else { 
+                alert("Connection is not open!")
+            }
+        }
+    </script>
+</html>
